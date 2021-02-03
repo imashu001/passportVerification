@@ -1,5 +1,31 @@
 const User = require("../models/user");
+module.exports.forgotPassword = function (req, res) {
+  return res.render("forgot_pass", {
+    title: "Reset Pass In",
+  });
+};
+module.exports.retrivePassword = async function (req, res) {
+  const user = await User.findOne(
+    { email: req.body.email },
+    function (err, user) {
+      if (err) {
+        console.log("error in finding user in signing up");
+        return res.send("error");
+      }
+      if (user) {
+        if (req.body.ans === user.security)
+          return res.send(`Your password is -${user.password}`);
+      } else if (req.body.ans !== user.security) {
+        return res.render("user_sign_up");
+      }
+      if (err) {
+        return res.render("user_sign_in");
+      }
+    }
+  );
+};
 
+//////
 module.exports.profile = function (req, res) {
   return res.render("user_profile", {
     title: "User Profile",
@@ -12,7 +38,7 @@ module.exports.signUp = function (req, res) {
     return res.redirect("/users/profile");
   }
   return res.render("user_sign_up", {
-    title: "Codeial | Sign Up",
+    title: "Sign Up",
   });
 };
 
@@ -23,7 +49,7 @@ module.exports.signIn = function (req, res) {
   }
 
   return res.render("user_sign_in", {
-    title: "Codeial | Sign In",
+    title: "Sign In",
   });
 };
 
@@ -63,3 +89,4 @@ module.exports.destroySession = function (req, res) {
   req.logout();
   return res.redirect("/");
 };
+//
