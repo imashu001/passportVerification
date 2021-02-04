@@ -10,16 +10,19 @@ module.exports.retrivePassword = async function (req, res) {
     function (err, user) {
       if (err) {
         console.log("error in finding user in signing up");
-        return res.send("error");
+        return res.render("user_sign_in");
       }
       if (user) {
-        if (req.body.ans === user.security)
-          return res.send(`Your password is -${user.password}`);
-      } else if (req.body.ans !== user.security) {
-        return res.render("user_sign_up");
-      }
-      if (err) {
-        return res.render("user_sign_in");
+        if (req.body.ans === user.security) {
+          return res.render("getPass", {
+            title: "Password",
+            pass: user.password,
+          });
+        } else if (req.body.ans !== user.security) {
+          return res.render("user_sign_up", {
+            title: "Incorrect",
+          });
+        }
       }
     }
   );
